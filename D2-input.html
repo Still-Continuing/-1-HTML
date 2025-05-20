@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+</head>
+<body>
+ 
+    <!-- 这是一个有属性的一级标题，用于显示页面的主要标题，归属于标题类 -->
+    <h1 class="title" title="Day2">这<br/>是第一个标题</h1>
+    
+    <!-- 这是一个段落标签，用于显示页面的内容,归属于内容类 -->
+    <p class="content">而这是第一个标题下的第一个段落。</p>
+
+    <!-- 这是一个换行标签，用于换行 -->
+    <hr/>
+    <!-- 这是一个链接，指定了一个链接地址用于跳转,并设置选项 -->
+    <a   title='Day2' href="昔日.png">点击查看图片</a>
+    <p>是否已经查看了图片？</p>
+    <p>是</p>
+    <input type="checkbox" title="别犹豫了快选！">
+    <p>再考虑一下</p>
+    <input type="checkbox" title="别考虑了，快看图片！！"disabled>
+    <hr/>
+    <p>请回答下列问题：</p>
+    <input placeholder="你看到了什么？" type="text" required
+           onchange="alert('是了，我也这么觉得')">
+    <input placeholder="你想知道什么？" type="text"
+           onchange="alert('但是我无法回答你这个问题')">
+    <br/>
+    <br/>
+    <button onclick="alert('好了！任务完成！')">提交</button>
+
+</body>
+</html>
