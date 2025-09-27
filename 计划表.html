@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>短期计划清单</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .time-period {
+            font-weight: bold;
+            color: #2196F3;
+            margin: 20px 0 10px 0;
+            font-size: 1.2em;
+        }
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .task-item:hover {
+            background-color: #f9f9f9;
+        }
+        .task-content {
+            flex-grow: 1;
+        }
+        .time-range {
+            font-size: 0.9em;
+            color: #666;
+            margin-right: 15px;
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+        }
+        .checkbox-container input {
+            width: 18px;
+            height: 18px;
+        }
+        .completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+        .add-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+        .add-button:hover {
+            background: #45a049;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .modal textarea {
+            width: 100%;
+            height: 200px;
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+        }
+        .modal button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .modal button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <button class="add-button" id="addTaskBtn">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <div id="taskModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>添加新计划</h2>
+            <p>请输入计划信息：</p>
+            <textarea id="taskInput" placeholder="请输入计划信息，格式如下：
+PLAN——短期
+9.27-周六
+晚上7:00
+完成专题26-1h
+英语单词复习1页-0.5h
+视频＋休息-0.5h
+专业课3页+听力材料-1h
+洗漱+休息-0.5h"></textarea>
+            <button id="processTasks">处理计划</button>
+            <button id="closeModal">取消</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>短期计划清单 (9.27-周六)</h1>
+        
+        <div class="time-period">19:00 - 20:00</div>
+        <div class="task-item">
+            <div class="task-content">完成专题26</div>
+            <div class="time-range">1h</div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="task1">
+            </div>
+        </div>
+        
+        <div class="time-period">20:00 - 21:00</div>
+        <div class="task-item">
+            <div class="task-content">英语单词复习1页</div>
+            <div class="time-range">0.5h</div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="task2">
+            </div>
+        </div>
+        <div class="task-item">
+            <div class="task-content">视频＋休息</div>
+            <div class="time-range">0.5h</div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="task3">
+            </div>
+        </div>
+        
+        <div class="time-period">21:00 - 22:00</div>
+        <div class="task-item">
+            <div class="task-content">专业课3页+听力材料</div>
+            <div class="time-range">1h</div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="task4">
+            </div>
+        </div>
+        
+        <div class="time-period">22:00 - 23:00</div>
+        <div class="task-item">
+            <div class="task-content">洗漱+休息</div>
+            <div class="time-range">0.5h</div>
+            <div class="checkbox-container">
+                <input type="checkbox" id="task5">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 添加任务按钮功能
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const modal = document.getElementById('taskModal');
+        const closeBtn = document.querySelector('.close');
+        const closeModalBtn = document.getElementById('closeModal');
+        const processTasksBtn = document.getElementById('processTasks');
+        const taskInput = document.getElementById('taskInput');
+
+        // 打开模态框
+        addTaskBtn.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+
+        // 关闭模态框
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // 点击模态框外部关闭
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // 处理任务输入
+        processTasksBtn.addEventListener('click', () => {
+            const inputText = taskInput.value.trim();
+            if (inputText) {
+                parseAndDisplayTasks(inputText);
+                modal.style.display = 'none';
+                taskInput.value = '';
+            }
+        });
+
+        // 解析任务并显示（新格式）
+        function parseAndDisplayTasks(input) {
+            const lines = input.split('\n').filter(line => line.trim() !== '');
+            const container = document.querySelector('.container');
+            
+            // 清除现有任务（保留标题）
+            const title = container.querySelector('h1');
+            container.innerHTML = '';
+            container.appendChild(title);
+            
+            // 解析输入内容
+            let planTitle = lines[0] || '计划清单';
+            let dateInfo = lines[1] || '';
+            let currentTimePeriod = '';
+            let currentHour = 19; // 默认从19:00开始
+            
+            // 更新标题
+            title.textContent = `${planTitle} (${dateInfo})`;
+            
+            const timeGroups = {};
+            
+            // 处理任务行
+            for (let i = 2; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
+                
+                // 如果是时间段标识
+                if (line.includes(':') && !line.includes('-')) {
+                    currentTimePeriod = line;
+                    // 提取小时数
+                    const hourMatch = line.match(/(\d{1,2}):/);
+                    if (hourMatch) {
+                        currentHour = parseInt(hourMatch[1]);
+                    }
+                    continue;
+                }
+                
+                // 如果是任务行
+                if (line.includes('-')) {
+                    const parts = line.split('-');
+                    if (parts.length >= 2) {
+                        const task = parts.slice(0, -1).join('-');
+                        const duration = parts[parts.length - 1];
+                        
+                        // 创建时间范围（每小时一个时间段）
+                        const startTime = `${currentHour.toString().padStart(2, '0')}:00`;
+                        const endTime = `${(currentHour + 1).toString().padStart(2, '0')}:00`;
+                        const timeRange = `${startTime}-${endTime}`;
+                        
+                        if (!timeGroups[timeRange]) {
+                            timeGroups[timeRange] = [];
+                        }
+                        
+                        timeGroups[timeRange].push({ task, duration });
+                        
+                        // 增加当前小时（为下一个时间段做准备）
+                        currentHour++;
+                    }
+                }
+            }
+            
+            // 显示任务
+            Object.keys(timeGroups).forEach(timeRange => {
+                const timePeriod = document.createElement('div');
+                timePeriod.className = 'time-period';
+                timePeriod.textContent = timeRange;
+                container.appendChild(timePeriod);
+                
+                timeGroups[timeRange].forEach((taskItem, index) => {
+                    const taskElement = document.createElement('div');
+                    taskElement.className = 'task-item';
+                    taskElement.innerHTML = `
+                        <div class="task-content">${taskItem.task}</div>
+                        <div class="time-range">${taskItem.duration}</div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="task_${Date.now()}_${index}">
+                        </div>
+                    `;
+                    container.appendChild(taskElement);
+                });
+            });
+            
+            // 重新绑定复选框事件
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const taskItem = this.closest('.task-item');
+                    const taskContent = taskItem.querySelector('.task-content');
+                    
+                    if (this.checked) {
+                        taskContent.classList.add('completed');
+                    } else {
+                        taskContent.classList.remove('completed');
+                    }
+                });
+            });
+        }
+
+        // 添加完成事项的交互功能
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const taskItem = this.closest('.task-item');
+                const taskContent = taskItem.querySelector('.task-content');
+                
+                if (this.checked) {
+                    taskContent.classList.add('completed');
+                } else {
+                    taskContent.classList.remove('completed');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
